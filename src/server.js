@@ -3,6 +3,9 @@ const app = express()
 const morgan = require('morgan')
 const path = require('path')
 
+// mongose connection
+const { mongoose } = require('./databases')
+
 // setttings 
 app.set('port', process.env.PORT || 3000)
 
