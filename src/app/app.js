@@ -7,15 +7,16 @@ class App extends Component{
         super()
         this.state = {
             draws: '3',
-            totalMoves: 0,
             turn: 'X',
             status: 'in progress',
             squares: '',
-            message: '¿ Are we ready to start ?'
+            message: '¿ Are we ready to start ?',
+            totalMoves: 0,
         }
 
         this.boardState ={
             board: Array(9).fill(''),
+            movimientos: 0
         }
     }
 
@@ -34,10 +35,10 @@ class App extends Component{
             ['0','4','8'],
             ['2','4','6']
         ]
-        let i
-        for ( i = 0; i < winnerCombos.length; i++){
+
+        for (let i = 0; i < winnerCombos.length; i++){
             const [a, b, c] = winnerCombos[i]
-            if(this.boardState.board[a] && this.boardState.board[a] == this.boardState.board[b] && this.boardState.board[a] == this.boardState.board[c] ){
+            if(this.boardState.board[a] && this.boardState.board[a] == this.boardState.board[b] && this.boardState.board[a] == this.boardState.board[c]){
                 
                 // determinate who win
                 if(this.state.turn == 'X'){
@@ -55,12 +56,20 @@ class App extends Component{
                     })
                 }
             }
+
         }
 
-        
-
+        return 'winner'
     }
-
+    
+    draw = () =>{
+            this.setState({
+                status: 'Draw',
+                message:'Draw',
+                turn:'',
+    
+            })
+    }
     clicked = (e) => {
         let index = e.target.dataset.squares
         if(this.state.status == 'in progress'){
@@ -69,7 +78,7 @@ class App extends Component{
             e.target.innerText = this.state.turn
             this.setState({
                 turn: this.state.turn == 'X' ? 'O' : 'X',
-                totalMoves: this.state.totalMoves+1
+                totalMoves: this.state.totalMoves == 8 ? this.draw() : this.state.totalMoves+1,
             })
             this.checkWinner()
         }
@@ -79,8 +88,8 @@ class App extends Component{
     restart = () => {
         this.boardState.board = Array(9).fill('')
         this.setState({
-            totalMoves: 0,
             turn: 'X',
+            totalMoves:0,
             status: 'in progress',
             message: '¿are we ready to start?',
             squares: <div className="row bigboard" onClick={(e) => { this.clicked(e)}} >

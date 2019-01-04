@@ -13,6 +13,10 @@ const Counter = (props) => {
         styleO.background = '#2bbbad'
         styleX.borderBottom = 'none !important'
     }
+    if(props.status == 'Draw'){
+        styleO.background = '#2bbbad'
+        styleX.background = '#2bbbad'
+    }
     if(props.turn == 'X'){
        styleX.borderBottom = '5px solid #2bbbad'
        styleO.borderBottom = 'none'
