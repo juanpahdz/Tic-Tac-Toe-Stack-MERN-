@@ -9,7 +9,7 @@ class App extends Component{
             draws: '3',
             totalMoves: 0,
             turn: 'X',
-            status: 'inprogress',
+            status: 'in progress',
             squares: '',
             message: '¿ Are we ready to start ?'
         }
@@ -23,17 +23,57 @@ class App extends Component{
         this.restart()
     }
     
+    checkWinner = () => {
+        let winnerCombos = [
+            ['0','1','2'],
+            ['3','4','5'],
+            ['6','7','8'],
+            ['0','3','6'],
+            ['1','4','7'],
+            ['2','5','8'],
+            ['0','4','8'],
+            ['2','4','6']
+        ]
+        let i
+        for ( i = 0; i < winnerCombos.length; i++){
+            const [a, b, c] = winnerCombos[i]
+            if(this.boardState.board[a] && this.boardState.board[a] == this.boardState.board[b] && this.boardState.board[a] == this.boardState.board[c] ){
+                
+                // determinate who win
+                if(this.state.turn == 'X'){
+                    this.setState({
+                        status:'Winner X',
+                        message: 'the winner is X',
+                        turn:''
+                    })
+                }
+                else{
+                    this.setState({
+                        status:'Winner O',
+                        message: 'the winner is O',
+                        turn:''
+                    })
+                }
+            }
+        }
+
+        
+
+    }
+
     clicked = (e) => {
         let index = e.target.dataset.squares
+        if(this.state.status == 'in progress'){
         if(this.boardState.board[index]  == '' ) {
             this.boardState.board[index] = this.state.turn
             e.target.innerText = this.state.turn
-    
             this.setState({
                 turn: this.state.turn == 'X' ? 'O' : 'X',
                 totalMoves: this.state.totalMoves+1
             })
+            this.checkWinner()
         }
+    }
     }
 
     restart = () => {
@@ -48,7 +88,7 @@ class App extends Component{
                             return <div className="square" data-squares={key} key={uid()}></div>
                         })
                         }
-                    </div>
+            </div>
         })
     }
 
@@ -64,7 +104,7 @@ class App extends Component{
                         {/* col-3 */}
 
                         <div className="col-3 counter-panel">
-                            <Counter draws={this.state.draws} turn={this.state.turn}>
+                            <Counter status={this.state.status} draws={this.state.draws} turn={this.state.turn}>
                             </Counter>
                         </div>
 

@@ -1,22 +1,25 @@
 import React from 'react'
 
 const Counter = (props) => {
- console.log(props)
 
- let styleO = {
-    borderBottom: 'none'
-    }
+ let styleO = {}
+ let styleX = {}
 
- let styleX = {
-    borderBottom: '5px solid #2bbbad'
+    if(props.status == 'Winner X'){
+        styleX.background = '#2bbbad'
+        styleO.borderBottom = 'none !important'
     }
- 
-   if(props.turn == 'X'){
-       styleX.borderBottom = `5px solid #2bbbad`
+    if(props.status == 'Winner O'){
+        styleO.background = '#2bbbad'
+        styleX.borderBottom = 'none !important'
+    }
+    if(props.turn == 'X'){
+       styleX.borderBottom = '5px solid #2bbbad'
        styleO.borderBottom = 'none'
-   } else{
+   } 
+   else if(props.turn == 'O') {
        styleO.borderBottom = '5px solid #2bbbad'
-       styleX.borderBottom = `none`
+       styleX.borderBottom = 'none'
    }
     
         return(
