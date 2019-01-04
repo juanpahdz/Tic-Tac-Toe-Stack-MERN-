@@ -1,29 +1,26 @@
 import React, { Component } from 'react'
 import Counter from './Componets/Counter.js'
 import uid from 'uid'
+import History from './Componets/History.js'
 
 class App extends Component{
     constructor(){
         super()
         this.state = {
-            draws: '3',
             turn: 'X',
             status: 'in progress',
             squares: '',
             message: '¿ Are we ready to start ?',
             totalMoves: 0,
-        }
-
-        this.boardState ={
             board: Array(9).fill(''),
-            movimientos: 0
+            boards: []
         }
     }
 
-    componentWillMount() {
-        this.restart()
+
+    componentDidMount() {
+        this.fetchBoards()
     }
-    
     checkWinner = () => {
         let winnerCombos = [
             ['0','1','2'],
@@ -38,7 +35,7 @@ class App extends Component{
 
         for (let i = 0; i < winnerCombos.length; i++){
             const [a, b, c] = winnerCombos[i]
-            if(this.boardState.board[a] && this.boardState.board[a] == this.boardState.board[b] && this.boardState.board[a] == this.boardState.board[c]){
+            if(this.state.board[a] && this.state.board[a] == this.state.board[b] && this.state.board[a] == this.state.board[c]){
                 
                 // determinate who win
                 if(this.state.turn == 'X'){
@@ -61,20 +58,20 @@ class App extends Component{
 
         return 'winner'
     }
-    
+  
     draw = () =>{
-            this.setState({
-                status: 'Draw',
-                message:'Draw',
-                turn:'',
-    
-            })
+        this.setState({
+            status: 'Draw',
+            message:'Draw',
+            turn:'',
+        })
     }
+
     clicked = (e) => {
         let index = e.target.dataset.squares
         if(this.state.status == 'in progress'){
-        if(this.boardState.board[index]  == '' ) {
-            this.boardState.board[index] = this.state.turn
+        if(this.state.board[index]  == '' ) {
+            this.state.board[index] = this.state.turn
             e.target.innerText = this.state.turn
             this.setState({
                 turn: this.state.turn == 'X' ? 'O' : 'X',
@@ -86,19 +83,26 @@ class App extends Component{
     }
 
     restart = () => {
-        this.boardState.board = Array(9).fill('')
+        
+        if(this.state.status == 'Winner X' || this.state.status == 'Draw' || this.state.status == 'Winner O' ){
+            this.fetchBoardsPost()
+            this.fetchBoards()
+        }
         this.setState({
+            board: Array(9).fill(''),
             turn: 'X',
             totalMoves:0,
             status: 'in progress',
             message: '¿are we ready to start?',
             squares: <div className="row bigboard" onClick={(e) => { this.clicked(e)}} >
-                        {this.boardState.board.map( (squares, key ) => {
+                        {this.state.board.map( (squares, key ) => {
                             return <div className="square" data-squares={key} key={uid()}></div>
                         })
                         }
             </div>
         })
+
+        
     }
 
     render(){
@@ -113,7 +117,7 @@ class App extends Component{
                         {/* col-3 */}
 
                         <div className="col-3 counter-panel">
-                            <Counter status={this.state.status} draws={this.state.draws} turn={this.state.turn}>
+                            <Counter status={this.state.status} turn={this.state.turn}>
                             </Counter>
                         </div>
 
@@ -126,42 +130,15 @@ class App extends Component{
                         {/* col-4 */}
 
                         <div className="col-4 historial">
-                            <table>
-                                <thead>
-                                    <tr className="text-center" >
-                                        <th>Game</th>
-                                        <th>Status</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                 <tr>
-                                     <td>
-                                        <div className="board">
-                                            <div className="minisquare">x</div>
-                                            <div className="minisquare">O</div>
-                                            <div className="minisquare">x</div>
-                                            <div className="minisquare">x</div>
-                                            <div className="minisquare">X</div>
-                                            <div className="minisquare">x</div>
-                                            <div className="minisquare">x</div>
-                                            <div className="minisquare">O</div>
-                                            <div className="minisquare">O</div>
-                                        </div>
-                                     </td>
-                                     <td>
-                                        <button className="btn btn-finished"> Winer X</button>
-                                     </td>
-                                 </tr>
-                                </tbody>
-                            </table>
+                            <History state={this.state.boards}/>
                         </div>    
                      </div>
 
                      <section>
                          <div className="control-panel">
                             <button className="btn btn-secundary btn-panel" onClick={(e) => this.restart(e) }>Restart</button>
-                            <button className="btn btn-secundary btn-panel">Pause</button>
-                            <button className="btn btn-secundary btn-panel">Delete history</button>
+                            <button className="btn btn-secundary btn-panel" >Pause</button>
+                            <button className="btn btn-secundary btn-panel" onClick={(e) => this.deleteHistory}>Delete history</button>
                          </div>
                      </section>    
                 </div>
