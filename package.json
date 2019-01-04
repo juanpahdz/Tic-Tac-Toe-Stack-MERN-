@@ -28,8 +28,10 @@
     "webpack-cli": "^3.2.0"
   },
   "dependencies": {
+    "@babel/plugin-proposal-class-properties": "^7.2.3",
     "express": "^4.16.4",
     "mongoose": "^5.4.2",
-    "morgan": "^1.9.1"
+    "morgan": "^1.9.1",
+    "uid": "0.0.2"
   }
 }

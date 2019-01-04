@@ -36,9 +36,6 @@
     font-weight: 900;
     height: 45px;
 }
-.btn-player-active{
-    border-bottom: 5px solid #2bbbad
-}
 
 /*big tricky styles*/
 .game{
@@ -64,6 +61,11 @@
     user-select: none;
     animation: appear 0.2s cubic-bezier(0.5, 1.8, 0.1, 1.1);
 }
+
+.square:hover{
+    background: rgba(238, 238, 238, 0.863);
+}
+
 .square:nth-child(7),.square:nth-child(8),.square:nth-child(9){
     border-bottom: none;
   }
