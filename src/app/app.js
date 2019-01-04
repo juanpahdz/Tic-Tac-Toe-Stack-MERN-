@@ -17,10 +17,12 @@ class App extends Component{
         }
     }
 
-
-    componentDidMount() {
-        this.fetchBoards()
+    componentWillMount() {
+        this.restart()
     }
+    
+
+
     checkWinner = () => {
         let winnerCombos = [
             ['0','1','2'],
