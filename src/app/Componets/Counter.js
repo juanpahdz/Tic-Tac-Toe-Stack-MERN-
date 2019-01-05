@@ -5,11 +5,11 @@ const Counter = (props) => {
  let styleO = {}
  let styleX = {}
 
-    if(props.status == 'Winner X'){
+    if(props.status == 'WinnerX'){
         styleX.background = '#2bbbad'
         styleO.borderBottom = 'none !important'
     }
-    if(props.status == 'Winner O'){
+    if(props.status == 'WinnerO'){
         styleO.background = '#2bbbad'
         styleX.borderBottom = 'none !important'
     }
@@ -48,5 +48,8 @@ const Counter = (props) => {
             </div>            
         )
 }
+
+ 
+
 
 export default Counter;

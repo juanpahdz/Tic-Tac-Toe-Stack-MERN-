@@ -1,5 +1,9 @@
    
 /* principal settings */
+.toast{
+    color: black !important;
+    font-size: 26px
+}
 .app{
     margin-top: 50px;
     margin-bottom: 55px;
@@ -90,7 +94,7 @@
     text-transform: uppercase;
 }
 
-.btn-finished{
+.WinnerX,.WinnerO{
     background: #28a745;
     color:white;
     font-size: 20px;
@@ -99,12 +103,16 @@
     height: 45px;
   }
 
-.btn-finished:hover{
+.WinerX:hover,{
+    background: #28a745 !important;
+    color: white !important;
+}
+.WinnerO:hover,{
     background: #28a745 !important;
     color: white !important;
 }
 
-.btn-draw{
+.Draw{
     background: #17a2b8;
     color:white;
     font-size: 20px;
@@ -113,11 +121,11 @@
     height: 45px;
 
 }
-.btn-draw:hover{
+.Draw:hover{
     background: #17a2b8 !important;
     color: white !important;
 }
-.btn-paused{
+.Paused{
     background: #dc3545;
     color:white;
     font-size: 20px;
@@ -125,21 +133,26 @@
     width: 100%;
     height: 45px;
 }
-.btn-paused:hover{
+.Paused:hover{
     background: #dc3545 !important;
     color: white !important;
     
 }
 
-.paused,.finished{
+.Paused,.WinnerX,.WinnerO{
     vertical-align: middle !important;
  }
 
 /* minisquares */
+.history{
+    overflow-y: scroll;
+    height: 54vh;
+}
 .board{
     width:90px;
     display: flex;
     flex-wrap: wrap;
+    margin: auto;
 }
 
   .minisquare{

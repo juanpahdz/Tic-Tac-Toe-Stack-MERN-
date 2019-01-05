@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import Counter from './Componets/Counter.js'
 import uid from 'uid'
 import History from './Componets/History.js'
+import Control from './Componets/control-panel.js'
 
 class App extends Component{
     constructor(){
@@ -10,7 +11,7 @@ class App extends Component{
             turn: 'X',
             status: 'in progress',
             squares: '',
-            message: '¿ Are we ready to start ?',
+            message: ' Are we ready to start ?',
             totalMoves: 0,
             board: Array(9).fill(''),
             boards: []
@@ -20,9 +21,53 @@ class App extends Component{
     componentWillMount() {
         this.restart()
     }
-    
+    componentDidMount(){
+        this.fetchBoards()
+    }
+
+     //  fetch!
+
+    fetchBoards = () => {
+        fetch('/api/boards')
+        .then(res => res.json())
+        .then(data => {
+            this.setState({boards: data}) 
+            console.log(this.state.boards)
+        })
+}
+
+    fetchBoardsPost = () => {
+      
+        fetch('/api/boards', {
+            method: 'POST',
+            body:JSON.stringify(this.state),
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+                }
+        }
+        )
+        .then(res => console.log(res))
+            M.toast({html: 'Game save'})
+        }
 
 
+    fetchDelete = () => {
+        fetch('/api/boards', {
+            method: 'DELETE',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+    })
+    .then(res => console.log(res))
+        M.toast({html: 'History was deleted'})
+    }
+
+    deleteHistory = () => {
+        this.fetchDelete()
+        this.fetchBoards()
+    }
     checkWinner = () => {
         let winnerCombos = [
             ['0','1','2'],
@@ -42,14 +87,14 @@ class App extends Component{
                 // determinate who win
                 if(this.state.turn == 'X'){
                     this.setState({
-                        status:'Winner X',
+                        status:'WinnerX',
                         message: 'the winner is X',
                         turn:''
                     })
                 }
                 else{
                     this.setState({
-                        status:'Winner O',
+                        status:'WinnerO',
                         message: 'the winner is O',
                         turn:''
                     })
@@ -85,8 +130,7 @@ class App extends Component{
     }
 
     restart = () => {
-        
-        if(this.state.status == 'Winner X' || this.state.status == 'Draw' || this.state.status == 'Winner O' ){
+        if(this.state.status == 'WinnerX' || this.state.status == 'Draw' || this.state.status == 'WinnerO' ){
             this.fetchBoardsPost()
             this.fetchBoards()
         }
@@ -131,18 +175,12 @@ class App extends Component{
 
                         {/* col-4 */}
 
-                        <div className="col-4 historial">
+                        <div className="col-4 history">
                             <History state={this.state.boards}/>
                         </div>    
                      </div>
 
-                     <section>
-                         <div className="control-panel">
-                            <button className="btn btn-secundary btn-panel" onClick={(e) => this.restart(e) }>Restart</button>
-                            <button className="btn btn-secundary btn-panel" >Pause</button>
-                            <button className="btn btn-secundary btn-panel" onClick={(e) => this.deleteHistory}>Delete history</button>
-                         </div>
-                     </section>    
+                     <Control restart={(e) => {this.restart(e)}} delete={(e) => {this.deleteHistory(e)}}/>
                 </div>
             </React.Fragment>
         )
