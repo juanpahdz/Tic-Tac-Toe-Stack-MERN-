@@ -5,7 +5,7 @@ const Board = require('../models/boards')
 
 // get the boards from the data base here 
 
-router.get('/api/boards', async (req, res) => { 
+router.get('/api/boards', async (req, res) => {
     const boards = await Board.find()
     res.json(boards)
 })
@@ -21,25 +21,25 @@ router.get('/api/boards/:id', async (req, res) => {
 
 router.post('/api/boards', async (req, res) => {
     const { status, board, totalMoves, turn } = req.body
-    const boards = new Board({status, board, totalMoves, turn})
+    const boards = new Board({ status, board, totalMoves, turn })
     await boards.save()
-    res.json({status: 'the board was added'})
+    res.json({ status: 'the board was added' })
 })
 
 // re-play the game 
 
 router.put('/api/boards/:id', async (req, res) => {
     const { status, board, turn, totalMoves } = req.body;
-    const newBoard = {status, board,  totalMoves, turn}
+    const newBoard = { status, board, totalMoves, turn }
     await Board.findByIdAndUpdate(req.params.id, newBoard)
-    res.json({status: 'the game was recibed again'})
+    res.json({ status: 'the game was recibed again' })
 })
 
 // delete the history
 
 router.delete('/api/boards', async (req, res) => {
     await Board.remove()
-    res.json({status: 'the history was deleted'})
+    res.json({ status: 'the history was deleted' })
 })
 
 module.exports = router
