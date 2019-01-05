@@ -2,12 +2,6 @@ import React from 'react'
 
 const History = (props) => {
 
-    console.log(props.state)
-// if(props.state.status == 'WinnerX'){
-//     console.log('everything its awesome')
-// }
-    
-
 return(
     <table>
         <thead>
@@ -17,7 +11,21 @@ return(
             </tr>
         </thead>
         <tbody>
-            {props.state.map( board => {
+            {props.boards.map( board => { 
+                let Message = {}
+                if(board.status == 'WinnerX'){
+                    Message = 'Won X'
+                } 
+                if(board.status == 'WinnerO'){
+                    Message = 'Won O'
+                }              
+                if(board.status == 'Draw'){
+                    Message = board.status
+                }              
+                if(board.status == 'Paused'){
+                    Message = board.status
+                }              
+
                 return (
                     <tr key={board._id}>
                         <td>
@@ -34,7 +42,7 @@ return(
                             </div>
                         </td>
                         <td>
-                            <button className={`btn ${board.status}`}>{board.status}</button>
+                            <button  onClick={() => {props.replay(board._id)}} className={`btn ${board.status} `}>{Message}</button>
                         </td>
                     </tr>
                 )

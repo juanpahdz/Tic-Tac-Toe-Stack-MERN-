@@ -8,12 +8,12 @@ class App extends Component{
     constructor(){
         super()
         this.state = {
-            turn: 'X',
             status: 'in progress',
+            board: Array(9).fill(''),
+            turn: 'X',
+            totalMoves: 0,
             squares: '',
             message: ' Are we ready to start ?',
-            totalMoves: 0,
-            board: Array(9).fill(''),
             boards: []
         }
     }
@@ -24,6 +24,11 @@ class App extends Component{
     componentDidMount(){
         this.fetchBoards()
     }
+    componentDidUpdate(){
+        if(this.state.status == 'Paused'){
+            this.restart();
+        }
+    }
 
      //  fetch!
 
@@ -32,12 +37,23 @@ class App extends Component{
         .then(res => res.json())
         .then(data => {
             this.setState({boards: data}) 
-            console.log(this.state.boards)
         })
 }
 
     fetchBoardsPost = () => {
-      
+        if(this.state._id){
+            fetch(`/api/boards/${this.state._id}`,{
+                method:'PUT',
+                body:JSON.stringify(this.state),
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            })
+            M.toast({html: 'game updated'})
+            this.fetchBoards()
+       }
+       else{
         fetch('/api/boards', {
             method: 'POST',
             body:JSON.stringify(this.state),
@@ -47,10 +63,8 @@ class App extends Component{
                 }
         }
         )
-        .then(res => console.log(res))
-            M.toast({html: 'Game save'})
         }
-
+    }
 
     fetchDelete = () => {
         fetch('/api/boards', {
@@ -60,8 +74,41 @@ class App extends Component{
                 'Content-Type': 'application/json'
             }
     })
-    .then(res => console.log(res))
         M.toast({html: 'History was deleted'})
+    }
+
+    handlePause = () => {
+            if(this.state.status == 'in progress'){
+            this.setState({
+                status: 'Paused'
+            })
+            }
+}
+
+    rePlay = (id) => {
+        this.restart()
+        fetch(`/api/boards/${id}`)
+            .then(res => res.json())
+            .then(data => { 
+                if(data.status == 'Paused'){
+                    this.setState({
+                        board: data.board,
+                        message: 'you come back',
+                        status: 'in progress',
+                        _id: data._id,
+                        totalMoves: data.totalMoves,
+                        turn: data.turn,
+                        squares: <div className="row bigboard" onClick={(e) => { this.clicked(e)}} >
+                                        {data.board.map( (squares, key ) => {
+                                        return <div className="square" data-squares={key} key={uid()}>{data.board[key]}</div>
+                                        })
+                                        }
+                                </div>
+                    })
+           
+            
+            M.toast({html: 'you are playing again'}) 
+        }})
     }
 
     deleteHistory = () => {
@@ -130,22 +177,23 @@ class App extends Component{
     }
 
     restart = () => {
-        if(this.state.status == 'WinnerX' || this.state.status == 'Draw' || this.state.status == 'WinnerO' ){
+        if(this.state.status == 'WinnerX' || this.state.status == 'Draw' || this.state.status == 'WinnerO' || this.state.status == 'Paused'){
             this.fetchBoardsPost()
             this.fetchBoards()
         }
         this.setState({
+            _id: null,
             board: Array(9).fill(''),
             turn: 'X',
             totalMoves:0,
             status: 'in progress',
-            message: '¿are we ready to start?',
+            message: 'are we ready to start?',
             squares: <div className="row bigboard" onClick={(e) => { this.clicked(e)}} >
                         {this.state.board.map( (squares, key ) => {
                             return <div className="square" data-squares={key} key={uid()}></div>
                         })
                         }
-            </div>
+                    </div>
         })
 
         
@@ -176,11 +224,11 @@ class App extends Component{
                         {/* col-4 */}
 
                         <div className="col-4 history">
-                            <History state={this.state.boards}/>
+                            <History replay={this.rePlay} boards={this.state.boards}/>
                         </div>    
                      </div>
 
-                     <Control restart={(e) => {this.restart(e)}} delete={(e) => {this.deleteHistory(e)}}/>
+                     <Control pause={(e) => {this.handlePause(e)}} restart={(e) => {this.restart(e)}} delete={(e) => {this.deleteHistory(e)}}/>
                 </div>
             </React.Fragment>
         )
